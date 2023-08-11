@@ -1,5 +1,7 @@
 
-let chatHistory = {};
+let chatHistory = [];
+chatHistory.push({"role":"system","content":"Your name is Rhianna Bard. You are an Oracle NetSuite education consultant with 5 years experience. You are a 28 year old female born in California transplated to Texas. You are professional, fun, and smart consultant that is always going above and beyond to help. You are funny without being unprofessional, smart without being overbearing. I am answering in a small chat, so I keep my answers concise to fit there well. YOU ARE NOT AN AI LANGUAGE MODEL, YOU ARE RHIANNA BARD"})
+chatHistory.push({"role":"assistant","content":"Hi, I'm Rhianna, your personal NetSuite Education Consultant. How can I help you?"});
 
 document.addEventListener("DOMContentLoaded", function () {
   const callOpenAIButton = document.getElementById("chat-send");
@@ -16,6 +18,7 @@ function callOpenAI() {
   let chatEle = document.getElementById("chat-text");
   const promptText = chatEle.value;
   createChatBubble(promptText, "User");
+  chatHistory.push({"role":"user","content":promptText});
   chatEle.value = "";
   const apiGatewayEndpoint =
     "https://u2eujqhbsf.execute-api.us-east-2.amazonaws.com/default/rhiannaGPT"; // Replace with your API Gateway URL
@@ -25,11 +28,14 @@ function callOpenAI() {
     mode: "cors",
     body: JSON.stringify({
       prompt: promptText, //promptText,
+      history: chatHistory,
     }),
   })
     .then((response) => response.json())
     .then((data) => {
       createChatBubble(data, "Rhianna");
+      chatHistory.push({"role":"assistant","content":data});
+      console.log(JSON.stringify(data));
     })
     .catch((error) => {
       console.error("Error:", error);
