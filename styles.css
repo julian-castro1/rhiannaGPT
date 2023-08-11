@@ -121,3 +121,15 @@ input[type="text"]:focus {
     border-radius: 13px 13px 0px 13px;
     margin-left: 20px;
 }
+.typing{
+    width: 5px;
+    background-color: rgb(178, 178, 178);
+    height: 5px;
+    border-radius: 50%;
+}
+.circles{
+    display: flex;
+    gap: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

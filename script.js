@@ -13,11 +13,11 @@ document.addEventListener("keydown", function (event) {
     callOpenAI();
   }
 });
-
 function callOpenAI() {
   let chatEle = document.getElementById("chat-text");
   const promptText = chatEle.value;
   createChatBubble(promptText, "User");
+  toggleCircles();
   chatHistory.push({"role":"user","content":promptText});
   chatEle.value = "";
   const apiGatewayEndpoint =
@@ -33,6 +33,7 @@ function callOpenAI() {
   })
     .then((response) => response.json())
     .then((data) => {
+      toggleCircles();
       createChatBubble(data, "Rhianna");
       chatHistory.push({"role":"assistant","content":data});
       console.log(JSON.stringify(data));
@@ -41,7 +42,42 @@ function callOpenAI() {
       console.error("Error:", error);
     });
 }
+let circles = false;
+function toggleCircles(){
+  if(!circles){
+    // draw 3 '...' to indicate that the bot is typing
+    createTypingBubble();
+    circles = true;
+  } else {
+    // remove the '...' from the chat
+    document.getElementById("chat-area").removeChild(document.querySelector(".chat-bubble.Rhianna:last-child"));  
+    circles = false;
+  }
+}
+function createTypingBubble() {
+  // Create the main div element
+  const chatBubbleDiv = document.createElement("div");
+  chatBubbleDiv.className = `chat-bubble Rhianna circles`;
 
+  // Create the img element
+  const circle1 = document.createElement("div");
+  const circle2 = document.createElement("div");
+  const circle3 = document.createElement("div");
+  circle1.className = "typing";
+  circle2.className = "typing";
+  circle3.className = "typing";
+
+  // Append the span to the main div
+  chatBubbleDiv.appendChild(circle1);
+  chatBubbleDiv.appendChild(circle2);
+  chatBubbleDiv.appendChild(circle3);
+
+  // Append the main div to the body or another container
+  document.getElementById("chat-area").appendChild(chatBubbleDiv); // or another container like document.getElementById('chat-container').appendChild(chatBubbleDiv);
+
+  const chatArea = document.getElementById("chat-area");
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
 function createChatBubble(text, role) {
   // Create the main div element
   const chatBubbleDiv = document.createElement("div");
